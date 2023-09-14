@@ -42,7 +42,7 @@ module Hud
       end
 
       def display(name, locals = {})
-        partial_path = "#{Rack:App::Utils.pwd}/components/#{name}.html.erb"
+        partial_path = "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
         if File.exist?(partial_path)
           partial_template = Tilt::ERBTemplate.new(partial_path)
           partial_template.render(self, locals)
@@ -54,9 +54,9 @@ module Hud
       def to_s
         begin
           if self.class.to_s.downcase.include? '::'
-            template = Tilt::ERBTemplate.new("#{Rack:App::Utils.pwd}/components/#{self.class.to_s.downcase.gsub("::","_")}.html.erb")
+            template = Tilt::ERBTemplate.new("#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase.gsub("::","_")}.html.erb")
           else
-            template = Tilt::ERBTemplate.new("#{Rack:App::Utils.pwd}/components/#{self.class.to_s.downcase}.html.erb")
+            template = Tilt::ERBTemplate.new("#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase}.html.erb")
           end
           template.render(self,locals: @locals,partial: method(:display))
         rescue Errno::ENOENT => e
