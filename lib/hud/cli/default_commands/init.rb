@@ -22,6 +22,8 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     Dir.chdir("./#{name}") do
 
       `mv base.rb #{name}.rb`
+      `sed -i 's/base/#{name}/g' #{name}.rb`
+      `sed -i 's/Base/#{name.capitalize}/g' #{name}.rb`
       STDOUT.puts(`tree .`)
       STDOUT.puts("Initialized #{name} - ok!")
     
