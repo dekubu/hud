@@ -15,7 +15,6 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     `rm __MACOSX`
     find_replace_in_directory("./base", 'base', ARGV[0])
     
-
     STDOUT.puts("Initialized #{ARGV[0]} - ok!")
     STDOUT.puts(system("tree ./#{ARGV[0]}"))
   end
