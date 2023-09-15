@@ -36,6 +36,9 @@ class Hud::CLI::Runner
 
       when 'irb'
         Hud::CLI::DefaultCommands::IRB.new.start(argv)
+      
+      when 'init'
+        Hud::CLI::DefaultCommands::Init.new.start(argv)
 
       else
         command = command_for(command_name)
