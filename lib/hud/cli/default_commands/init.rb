@@ -8,9 +8,9 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     ARGV.clear
     ARGV.push(*args)
 
-    # gem_root = Gem::Specification.find_by_name('hud').gem_dir
-    # file_path = File.join(gem_root, 'lib/hud/templates', 'base.zip')
-    # `unzip #{file_path} -d .`
+    gem_root = Gem::Specification.find_by_name('hud').gem_dir
+    file_path = File.join(gem_root, 'lib/hud/templates', 'base.zip')
+    `unzip #{file_path} -d ./#{ARGV[0]}`
 
     STDOUT.puts("Initialized #{ARGV[0]} - ok!")
   end
