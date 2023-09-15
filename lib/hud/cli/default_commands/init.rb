@@ -1,6 +1,7 @@
 require 'irb'
 require 'fileutils'
 require 'irb/completion'
+
 class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
 
   description 'Initialize a new hud application'
@@ -31,10 +32,13 @@ def find_replace_in_directory(directory, criteria, replacement)
       # For files, open the file for reading and writing
       content = File.read(entry_path)
 
+      # Create a regular expression to match the criteria as a whole word
+      regex = /\b#{Regexp.escape(criteria)}\b/i
+
       # Check if the criteria appears in the content, case-insensitively
-      if content.downcase.include?(criteria.downcase)
+      if content.match?(regex)
         # Perform replacements based on the criteria while preserving case
-        modified_content = content.gsub(/#{criteria}/i) do |match|
+        modified_content = content.gsub(regex) do |match|
           match == criteria ? replacement : match
         end
 
@@ -58,7 +62,7 @@ def find_replace_in_directory(directory, criteria, replacement)
 end
 
 # Example usage:
-# find_replace_in_directory('/path/to/your/directory', 'criteria', 'replacement')
+# find_replace_in_directory('/path/to/your/directory', 'base', 'coinbase')
 
 
 end
