@@ -23,6 +23,7 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
 
       rename_filename("base.rb","#{name}.rb")
       replace_in_file("#{name}.rb","Base",name.capitalize)
+      replace_in_file("config.ru","Base",name.capitalize)
 
       STDOUT.puts(`tree .`)
       STDOUT.puts("Initialized #{name} - ok!")
