@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    hud (0.0.3)
+    hud (0.0.5)
+      browser
       linguistics
       msgpack
       rack-app
@@ -11,6 +12,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    browser (5.3.1)
     coderay (1.1.3)
     diff-lcs (1.5.0)
     linguistics (2.1.0)
@@ -51,6 +53,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
 
 DEPENDENCIES
   bundler
