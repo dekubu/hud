@@ -29,11 +29,7 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     
     end
   end
-
-  require 'fileutils'
-
-  require 'fileutils'
-
+  
   def find_replace_in_directory(directory, criteria, replacement)
     # Recursively list all files and directories in the given directory
     Dir.glob(File.join(directory, '**', '*')).each do |entry_path|
