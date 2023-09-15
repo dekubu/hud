@@ -20,8 +20,8 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     find_replace_in_directory("./#{name}", 'base', name)
     
     Dir.chdir("./#{name}") do
-      
-      rename_filename("base.rb","base",name)
+
+      rename_filename("base.rb","#{name}.rb")
       replace_in_file("#{name}.rb","Base",name.capitalize)
 
       STDOUT.puts(`tree .`)
@@ -77,18 +77,8 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     end
   end
 
-  def rename_filename(filename, criteria, replacement)
-    # Check if the criteria is present in the filename
-    if filename.downcase.include?(criteria.downcase)
-      # Replace the criteria with the replacement while preserving case
-      new_filename = filename.gsub(/#{Regexp.escape(criteria)}/i) do |match|
-        match == criteria ? replacement : match
-      end
-      return new_filename
-    else
-      # If the criteria is not present, return the original filename
-      return filename
-    end
+  def rename_filename(from,to)
+    `mv #{from} #{to}`
   end
 
 end
