@@ -7,7 +7,9 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
   action do |*args|
     ARGV.clear
     ARGV.push(*args)
-    
+
+    `unzip ../../templates/base.zip -d .`
+
     STDOUT.puts("Initialize application")
   end
 
