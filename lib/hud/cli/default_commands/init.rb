@@ -18,6 +18,8 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     `mv base/ #{name}`
 
     find_replace_in_directory("./#{name}", 'base', name)
+    rename_filename("./#{name}/base.rb","base",name)
+
     STDOUT.puts(`tree ./#{name}`)
     STDOUT.puts("Initialized #{name} - ok!")
     `cd #{name}`
@@ -62,13 +64,19 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
       end
     end
   end
-  
-  # Example usage:
-  # find_replace_in_directory('/path/to/your/directory', 'base', 'coinbase')
-  
 
-# Example usage:
-# find_replace_in_directory('/path/to/your/directory', 'base', 'coinbase')
-
+  def rename_filename(filename, criteria, replacement)
+    # Check if the criteria is present in the filename
+    if filename.downcase.include?(criteria.downcase)
+      # Replace the criteria with the replacement while preserving case
+      new_filename = filename.gsub(/#{Regexp.escape(criteria)}/i) do |match|
+        match == criteria ? replacement : match
+      end
+      return new_filename
+    else
+      # If the criteria is not present, return the original filename
+      return filename
+    end
+  end
 
 end
