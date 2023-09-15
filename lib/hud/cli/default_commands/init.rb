@@ -20,14 +20,24 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     find_replace_in_directory("./#{name}", 'base', name)
     
     Dir.chdir("./#{name}") do
-
       `mv base.rb #{name}.rb`
-      `sed 's/base/#{name}/g' #{name}.rb`
-      `sed 's/Base/#{name.capitalize}/g' #{name}.rb`
+      replace_in_file("#{name}.rb","Base",name.capitalize)
+      
       STDOUT.puts(`tree .`)
       STDOUT.puts("Initialized #{name} - ok!")
     
     end
+  end
+
+  def replace_in_file(file_path, search_pattern, replacement)
+    # Read the file's contents
+    file_contents = File.read(file_path)
+  
+    # Perform a global substitution on the contents
+    modified_contents = file_contents.gsub(search_pattern, replacement)
+  
+    # Write the modified contents back to the same file
+    File.open(file_path, 'w') { |file| file.puts modified_contents }
   end
 
   def find_replace_in_directory(directory, criteria, replacement)
