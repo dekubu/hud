@@ -9,14 +9,17 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     ARGV.clear
     ARGV.push(*args)
 
+    name = ARGV[0]
     gem_root = Gem::Specification.find_by_name('hud').gem_dir
     file_path = File.join(gem_root, 'lib/hud/templates', 'base.zip')
     `unzip #{file_path} -d .`
     `rm -rf __MACOSX`
-    find_replace_in_directory("./base", 'base', ARGV[0])
+    `mv base/ #{name}`
+
+    find_replace_in_directory("./#{name}", 'base', name)
     
-    STDOUT.puts("Initialized #{ARGV[0]} - ok!")
-    STDOUT.puts(system("tree ./#{ARGV[0]}"))
+    STDOUT.puts("Initialized #{name} - ok!")
+    STDOUT.puts(`tree ./#{name}`)
   end
 
   require 'fileutils'
