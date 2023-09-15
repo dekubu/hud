@@ -22,8 +22,15 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     Dir.chdir("./#{name}") do
 
       rename_filename("base.rb","#{name}.rb")
+      
       replace_in_file("#{name}.rb","Base",name.capitalize)
       replace_in_file("config.ru","Base",name.capitalize)
+      
+      replace_in_file("./#{name}/index.html.erb","Base",name.capitalize)
+      replace_in_file("./#{name}/index.html.erb","base",name)
+
+      replace_in_file("./#{name}/layout.html.erb","Base",name.capitalize)
+      replace_in_file("./#{name}/layout.html.erb","base",name)
 
       STDOUT.puts(`tree .`)
       STDOUT.puts("Initialized #{name} - ok!")
