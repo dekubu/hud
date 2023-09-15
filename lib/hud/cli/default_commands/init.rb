@@ -22,14 +22,14 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     Dir.chdir("./#{name}") do
 
       `mv base.rb #{name}.rb`
-      `sed -i 's/base/#{name}/g' #{name}.rb`
-      `sed -i 's/Base/#{name.capitalize}/g' #{name}.rb`
+      `sed 's/base/#{name}/g' #{name}.rb`
+      `sed 's/Base/#{name.capitalize}/g' #{name}.rb`
       STDOUT.puts(`tree .`)
       STDOUT.puts("Initialized #{name} - ok!")
     
     end
   end
-  
+
   def find_replace_in_directory(directory, criteria, replacement)
     # Recursively list all files and directories in the given directory
     Dir.glob(File.join(directory, '**', '*')).each do |entry_path|
