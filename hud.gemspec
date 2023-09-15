@@ -43,6 +43,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "msgpack"
   spec.add_dependency "sdbm"
   spec.add_dependency "linguistics"
+  spec.add_dependency "browser"
   spec.add_dependency "rack-app"
   spec.add_dependency "rack-app-front_end"
     
