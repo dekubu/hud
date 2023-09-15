@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'bundler'
+  Bundler.require
+rescue LoadError
+end
+
+require 'rack/app'
+Hud::CLI.start(ARGV)

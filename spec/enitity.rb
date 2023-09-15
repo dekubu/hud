@@ -1,4 +1,4 @@
-require_relative "spec_helper"
+require_relative ""
 require 'hud/db/entity'
 require 'rspec'
 

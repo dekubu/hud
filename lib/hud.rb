@@ -6,6 +6,7 @@ require 'tilt'
 require 'ostruct'
 require 'tilt/erb'
 require 'rack/app/front_end'
+require 'hud/cli'
 
 module Hud
   
