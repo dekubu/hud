@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hud (0.0.1)
+    hud (0.0.2)
       linguistics
       msgpack
       rack-app

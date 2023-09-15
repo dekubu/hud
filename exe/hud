@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
-
 begin
   require 'bundler'
   Bundler.require
 rescue LoadError
 end
 
-require 'rack/app'
+require 'hud'
 Hud::CLI.start(ARGV)
