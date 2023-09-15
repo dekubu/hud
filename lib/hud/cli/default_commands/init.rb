@@ -17,9 +17,9 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     `mv base/ #{name}`
 
     find_replace_in_directory("./#{name}", 'base', name)
-    
-    STDOUT.puts("Initialized #{name} - ok!")
     STDOUT.puts(`tree ./#{name}`)
+    STDOUT.puts("Initialized #{name} - ok!")
+    `cd #{name}`
   end
 
   require 'fileutils'
