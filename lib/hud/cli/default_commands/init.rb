@@ -18,11 +18,14 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     `mv base/ #{name}`
 
     find_replace_in_directory("./#{name}", 'base', name)
-    rename_filename("./#{name}/base.rb","base",name)
+    
+    FileUtils.cd("./#{name}")
+    
+    rename_filename("base.rb","base",name)
 
     STDOUT.puts(`tree ./#{name}`)
     STDOUT.puts("Initialized #{name} - ok!")
-    `cd #{name}`
+    
   end
 
   require 'fileutils'
