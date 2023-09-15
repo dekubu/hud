@@ -19,13 +19,13 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
 
     find_replace_in_directory("./#{name}", 'base', name)
     
-    Dir.chdir("./#{name}")
-
-    rename_filename("base.rb","base",name)
-
-    STDOUT.puts(`tree .`)
-    STDOUT.puts("Initialized #{name} - ok!")
+    Dir.chdir("./#{name}") do
+      
+      rename_filename("base.rb","base",name)
+      STDOUT.puts(`tree .`)
+      STDOUT.puts("Initialized #{name} - ok!")
     
+    end
   end
 
   require 'fileutils'
