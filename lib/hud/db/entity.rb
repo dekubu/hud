@@ -19,6 +19,10 @@ module Hud
           end
           result
         end
+        def new?
+          return true if self.created_at.nil?
+          false
+        end
         # Define a class method to create an entity object from a hash
         def self.from_hash(uid,data_hash)
           entity = new
@@ -62,7 +66,7 @@ module Hud
                 entity.last_updated_at = entity.created_at
   
                 SDBM.open(@name) do |db|
-                  db[uid] = entity.to_hash.to_msgpack
+                  db[uid] =Marshal.dump(entity.to_hash)
                 end
   
                 uid
@@ -72,10 +76,18 @@ module Hud
                 entity.last_updated_at = DateTime.now.to_s
   
                 SDBM.open(@name) do |db|
-                  db.update entity.uid => entity.to_hash.to_msgpack
+                  db.update entity.uid => Marshal.dump(entity.to_hash)
                 end
   
                 entity
+              end
+
+              def persist(entity)
+                if entity.new?
+                  add(entity)
+                else
+                  update(entity)
+                end
               end
   
               def delete(entity)
@@ -101,13 +113,17 @@ module Hud
   
                 SDBM.open(@name) do |db|
                   db.each do |key, value|
-                    data = MessagePack.unpack(value)
+                    data = Marshal.load(value)
                     result << @entity_class.from_hash(key,data)
                   end
                 end
   
                 result
               end
+
+              alias :insert :add
+              alias :"<<" :add
+              alias :save :update
             end
   
   

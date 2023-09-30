@@ -20,6 +20,7 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
     find_replace_in_directory("./#{name}", 'base', name)
     
     Dir.chdir("./#{name}") do
+      
 
       rename_filename("base.rb","#{name}.rb")
       

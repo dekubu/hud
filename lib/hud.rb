@@ -2,6 +2,7 @@ require "hud/version"
 require_relative "./hud/db/entity.rb"
 
 require 'rack/app'
+require 'yaml'
 require 'tilt'
 require 'ostruct'
 require 'tilt/erb'
