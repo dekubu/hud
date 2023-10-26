@@ -10,21 +10,14 @@ require "rack/app/front_end"
 require "hud/cli"
 
 module Hud
-  class Error < StandardError; end
-  module Env
-    FOLDER_NAMES = {}
-  
-    def self.included(base)
-      folder_name = base.name.split("::").first.downcase
-      FOLDER_NAMES[base] = folder_name
-      # Existing code, if any
-    end
-  
-    def self.folder_name_for(base)
-      FOLDER_NAMES[base]
-    end
+  def self.configuration
+    @configuration ||= OpenStruct.new
   end
-
+  
+  def self.configure
+    configuration.components_dir = "base"
+    yield(configuration)
+  end
   class Display
     module Helpers
       def display(name, locals: {})
@@ -46,7 +39,7 @@ module Hud
       alias_method :args, :locals
 
       def folder_name
-        "base"
+        Hud.configuration.components_dir
       end
 
       def development?

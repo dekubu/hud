@@ -1,10 +1,6 @@
 require "ostruct"
 require_relative "spec_helper"  # Adjust the path accordingly
 
-class Base
-  include Hud::Env
-end
-
 RSpec.describe Hud::Display::Helpers do
   include described_class  # includes the module being described into the example group
 
