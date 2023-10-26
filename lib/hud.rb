@@ -11,7 +11,7 @@ require "hud/cli"
 
 module Hud
   class Error < StandardError; end
-  module Helpers ;end
+  module ENV ;end
   
   class Display
     module Helpers
