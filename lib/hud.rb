@@ -13,9 +13,16 @@ module Hud
   class Error < StandardError; end
 
   module Env
+    FOLDER_NAMES = {}
+
     def self.included(base)
       folder_name = base.name.split("::").first.downcase
+      FOLDER_NAMES[base] = folder_name
       `mkdir -p components/#{folder_name}`
+    end
+
+    def self.folder_name_for(base)
+      FOLDER_NAMES[base]
     end
   end
 
@@ -40,7 +47,9 @@ module Hud
     end
 
     class Component
-      include Env
+      def folder_name
+        Env.folder_name_for(self.class)
+      end
 
       def development?
         ENV["RACK_ENV"] == "development"
@@ -57,15 +66,12 @@ module Hud
       end
 
       def display(name, locals = {})
-        helper_module = self.class.included_modules.find { |mod| mod == Hud::Env }
-        folder_name = helper_module ? helper_module.name.split("::").first.downcase : ''
-        
         paths_to_check = [
           "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{name}.html.erb",
           "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
         ]
 
-        partial_path = paths_to_check.find { |path| 
+        partial_path = paths_to_check.find { |path|
           puts "looking in #{path} for #{name}"
           File.exist?(path)
         }
@@ -79,17 +85,14 @@ module Hud
       end
 
       def to_s
-        helper_module = self.class.included_modules.find { |mod| mod == Hud::Env }
-        folder_name = helper_module ? helper_module.name.split("::").first.downcase : ''
-        
         paths_to_check = [
           "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb",
           "#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb"
         ]
-        
-        template_path = paths_to_check.find { |path| 
+
+        template_path = paths_to_check.find { |path|
           puts "looking in #{path}"
-          File.exist?(path) 
+          File.exist?(path)
         }
 
         if template_path
