@@ -39,7 +39,7 @@ module Hud
       alias_method :args, :locals
 
       def folder_name
-        Hud.configuration.components_dir
+        Hud.configuration.components_dir.to_s
       end
 
       def development?
