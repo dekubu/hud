@@ -69,6 +69,7 @@ module Hud
         paths_to_check = [folder_component_path, root_component_path.to_s]
 
         template_path = paths_to_check.find { |path|
+          puts path
           File.exist?(path)
         }
 
