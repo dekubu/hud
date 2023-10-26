@@ -13,7 +13,7 @@ module Hud
   def self.configuration
     @configuration ||= OpenStruct.new
   end
-  
+
   def self.configure
     configuration.components_dir = "base"
     yield(configuration)
@@ -58,28 +58,30 @@ module Hud
         new(locals: locals)
       end
 
+
       def render_template(name: nil, locals: {})
         name ||= self.class.to_s.downcase.gsub("::", "_")
 
         base_path = Pathname.new(Rack::App::Utils.pwd)
 
-        root_component_path = base_path.join("components", "#{name}.html.erb")
         folder_component_path = base_path.join(folder_name, "components", "#{name}.html.erb")
+        root_component_path = base_path.join("components", "#{name}.html.erb")
 
-        paths_to_check = [folder_component_path, root_component_path.to_s]
-
-        template_path = paths_to_check.find { |path|
-          puts path
-          File.exist?(path)
-        }
-
-        if template_path
-          template = Tilt::ERBTemplate.new(template_path)
-          template.render(self, locals)
-        else
-          raise "Template #{name} not found in either location"
+        begin
+          raise "Template #{name} not found in folder components" unless File.exist?(folder_component_path)
+          template = Tilt::ERBTemplate.new(folder_component_path)
+        rescue
+          begin
+            raise "Template #{name} not found in root or app components directory" unless File.exist?(root_component_path)
+            template = Tilt::ERBTemplate.new(root_component_path)
+          rescue
+            raise
+          end
         end
+
+        template.render(self, locals)
       end
+
 
       private
 
