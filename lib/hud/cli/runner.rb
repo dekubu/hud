@@ -38,6 +38,9 @@ class Hud::CLI::Runner
 
     when "init"
       Hud::CLI::DefaultCommands::Init.new.start(argv)
+    
+    when "mount"
+      Hud::CLI::DefaultCommands::Mount.new.start(argv)
 
     else
       command = command_for(command_name)
