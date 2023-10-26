@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hud (0.0.8)
+    hud (0.0.12)
       browser
       linguistics
       msgpack
@@ -104,8 +104,9 @@ DEPENDENCIES
   hud!
   pry
   rake (~> 10.0)
-  rspec (~> 3.0)
+  rspec (~> 3.12)
   standard (~> 1.31)
+  tilt (~> 2.2)
 
 BUNDLED WITH
    2.4.19

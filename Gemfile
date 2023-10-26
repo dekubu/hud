@@ -6,3 +6,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gemspec
 
 gem "standard", "~> 1.31"
+
+gem "rspec", "~> 3.12"
+
+gem "tilt", "~> 2.2"
