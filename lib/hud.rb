@@ -87,7 +87,7 @@ module Hud
         @content = render_template(name: name, locals: locals)
       end
       def to_s
-        @content
+        @content.nil? ? "Oppps!" : @content
       end
   
       private
