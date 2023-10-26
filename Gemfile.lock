@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hud (0.0.14)
+    hud (0.0.16)
       browser
       linguistics
       msgpack

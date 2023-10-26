@@ -1,10 +1,11 @@
 module Hud::CLI::DefaultCommands::ListCommands
   extend self
 
-  PRESERVED_KEYWORDS = %w[help routes irb init].freeze
+  PRESERVED_KEYWORDS = %w[help routes irb init mount].freeze
 
   DEFAULT_COMMANDS = {
     "init" => Hud::CLI::DefaultCommands::Init.description,
+    "Mount" => Hud::CLI::DefaultCommands::Mount.description,
     "help" => "list all available command or describe a specific command",
     "irb" => Hud::CLI::DefaultCommands::IRB.description
   }.freeze
