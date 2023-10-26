@@ -29,54 +29,51 @@ module Hud
   class Display
     module Helpers
       def display(name, locals: {})
-        klz = Hud::Display.build(name)
+        klz = Display.build(name)
         klz.call(locals: locals)
       end
     end
-
+  
     def self.build(name)
       symbol = name.to_sym
       class_name = symbol.to_s.capitalize
-
-      if Object.const_defined?(class_name)
-        Object.const_get(class_name)
-      else
-        new_class = Class.new(Hud::Display::Component)
-        Object.const_set(class_name, new_class)
-      end
+      Object.const_set(class_name, Class.new(Component)) unless Object.const_defined?(class_name)
+      Object.const_get(class_name)
     end
-
+  
     class Component
+      attr_reader :locals
+      alias args locals
+  
       def folder_name
         Env.folder_name_for(self.class)
       end
-
+  
       def development?
         ENV["RACK_ENV"] == "development"
       end
-
+  
       def production?
         ENV["RACK_ENV"] == "production"
       end
-
-      attr_reader :locals
-
+  
+      def staging?
+        ENV["RACK_ENV"] == "staging"
+      end
+  
       def self.call(locals: {})
         new(locals: locals)
       end
-
+  
       def render_template(name: nil, locals: {})
         name ||= self.class.to_s.downcase.gsub("::", "_")
         paths_to_check = [
-          "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{name}.html.erb",
+          "#{Rack::App::Utils.pwd}/#{folder_name}/components/#{name}.html.erb",
           "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
         ]
-
-        template_path = paths_to_check.find { |path|
-          puts "looking in #{path} for #{name}"
-          File.exist?(path)
-        }
-
+  
+        template_path = paths_to_check.find { |path| File.exist?(path) }
+  
         if template_path
           template = Tilt::ERBTemplate.new(template_path)
           template.render(self, locals)
@@ -84,16 +81,17 @@ module Hud
           raise "Template #{name} not found in either location"
         end
       end
-
+  
       def display(name, locals = {})
         render_template(name: name, locals: locals)
       end
-
+  
       private
-
+  
       def initialize(locals: {})
         @locals = OpenStruct.new(locals)
       end
     end
   end
+  
 end
