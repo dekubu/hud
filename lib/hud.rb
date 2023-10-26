@@ -54,7 +54,10 @@ module Hud
           "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
         ]
 
-        partial_path = paths_to_check.find { |path| File.exist?(path) }
+        partial_path = paths_to_check.find { |path| 
+          puts "looking in #{path} for #{name}"
+          File.exist?(path) 
+        }
 
         if partial_path
           partial_template = Tilt::ERBTemplate.new(partial_path)
