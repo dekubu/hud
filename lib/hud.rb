@@ -12,8 +12,16 @@ require "hud/cli"
 module Hud
   class Error < StandardError; end
   module Env
+    FOLDER_NAMES = {}
+  
     def self.included(base)
       folder_name = base.name.split("::").first.downcase
+      FOLDER_NAMES[base] = folder_name
+      # Existing code, if any
+    end
+  
+    def self.folder_name_for(base)
+      FOLDER_NAMES[base]
     end
   end
 
@@ -59,14 +67,13 @@ module Hud
 
       def render_template(name: nil, locals: {})
         name ||= self.class.to_s.downcase.gsub("::", "_")
-                
 
         base_path = Pathname.new(Rack::App::Utils.pwd)
 
         root_component_path = base_path.join("components", "#{name}.html.erb")
-        folder_component_path = base_path.join(folder_name, 'components', "#{name}.html.erb")
+        folder_component_path = base_path.join(folder_name, "components", "#{name}.html.erb")
 
-        paths_to_check = [folder_component_path,root_component_path.to_s]
+        paths_to_check = [folder_component_path, root_component_path.to_s]
 
         template_path = paths_to_check.find { |path|
           File.exist?(path)
