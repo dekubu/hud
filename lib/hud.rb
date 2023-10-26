@@ -72,7 +72,7 @@ module Hud
           template = Tilt::ERBTemplate.new(folder_component_path)
         rescue
           begin
-            raise "Template #{name} not found in #{root_component_path} directory" unless File.exist?(root_component_path)
+            raise "Template #{name} not found in #{root_component_path} directory or #{folder_component_path}" unless File.exist?(root_component_path)
             template = Tilt::ERBTemplate.new(root_component_path)
           rescue
             raise
