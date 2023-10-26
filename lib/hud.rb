@@ -34,7 +34,6 @@ module Hud
       end
     end
     
-
     class Component
 
       def development?
@@ -52,12 +51,18 @@ module Hud
       end
 
       def display(name, locals = {})
-        partial_path = "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
-        if File.exist?(partial_path)
+        paths_to_check = [
+          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::Display::Helpers }.name.split('::').first}/#{name}.html.erb",
+          "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
+        ]
+
+        partial_path = paths_to_check.find { |path| File.exist?(path) }
+
+        if partial_path
           partial_template = Tilt::ERBTemplate.new(partial_path)
           partial_template.render(self, locals)
         else
-          "Partial #{partial_name} not found"
+          raise "Partial #{name} not found in either location"
         end
       end
 
@@ -77,9 +82,14 @@ module Hud
       private 
 
       def initialize(locals:{})
-        `mkdir -p components/`
-        @locals = OpenStruct.new(locals)
-      end
+  helper_module = self.class.included_modules.find { |mod| mod == Hud::Display::Helpers }
+  if helper_module
+    folder_name = helper_module.name.split('::').first
+    `mkdir -p components/#{folder_name}`
+  end
+  `mkdir -p components/`
+  @locals = OpenStruct.new(locals)
+end
 
     end
   end
