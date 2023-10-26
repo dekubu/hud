@@ -14,7 +14,7 @@ class Hud::CLI::DefaultCommands::Mount < Hud::CLI::Command
     file_path = File.join(gem_root, "lib/hud/templates", "mount.zip")
     `unzip #{file_path} -d .`
     `rm -rf __MACOSX`
-    `mv base/ #{name}`
+    `mv mount/ #{name}`
 
     find_replace_in_directory("./#{name}", "base", name)
 
