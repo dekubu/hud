@@ -66,31 +66,28 @@ module Hud
       end
 
       def render_template(name: nil, locals: {})
-  name = self.class.to_s.downcase.gsub('::', '_') unless name
-  paths_to_check = [
-    "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{name}.html.erb",
-    "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
-  ]
+        name ||= self.class.to_s.downcase.gsub("::", "_")
+        paths_to_check = [
+          "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{name}.html.erb",
+          "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
+        ]
 
-  template_path = paths_to_check.find { |path|
-    puts "looking in #{path} for #{name}"
-    File.exist?(path)
-  }
+        template_path = paths_to_check.find { |path|
+          puts "looking in #{path} for #{name}"
+          File.exist?(path)
+        }
 
-  if template_path
-    template = Tilt::ERBTemplate.new(template_path)
-    template.render(self, locals)
-  else
-    raise "Template #{name} not found in either location"
-  end
-end
+        if template_path
+          template = Tilt::ERBTemplate.new(template_path)
+          template.render(self, locals)
+        else
+          raise "Template #{name} not found in either location"
+        end
+      end
 
-def display(name, locals = {})
-  render_template(name: name, locals: locals)
-end
-
-
-
+      def display(name, locals = {})
+        render_template(name: name, locals: locals)
+      end
 
       private
 
