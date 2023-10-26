@@ -89,9 +89,7 @@ def display(name, locals = {})
   render_template(name: name, locals: locals)
 end
 
-def to_s
-  render_template(locals: @locals)
-end
+
 
 
       private
