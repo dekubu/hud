@@ -65,43 +65,34 @@ module Hud
         new(locals: locals)
       end
 
-      def display(name, locals = {})
-        paths_to_check = [
-          "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{name}.html.erb",
-          "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
-        ]
+      def render_template(name: nil, locals: {})
+  name = self.class.to_s.downcase.gsub('::', '_') unless name
+  paths_to_check = [
+    "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{name}.html.erb",
+    "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
+  ]
 
-        partial_path = paths_to_check.find { |path|
-          puts "looking in #{path} for #{name}"
-          File.exist?(path)
-        }
+  template_path = paths_to_check.find { |path|
+    puts "looking in #{path} for #{name}"
+    File.exist?(path)
+  }
 
-        if partial_path
-          partial_template = Tilt::ERBTemplate.new(partial_path)
-          partial_template.render(self, locals)
-        else
-          raise "Partial #{name} not found in either location"
-        end
-      end
+  if template_path
+    template = Tilt::ERBTemplate.new(template_path)
+    template.render(self, locals)
+  else
+    raise "Template #{name} not found in either location"
+  end
+end
 
-      def to_s
-        paths_to_check = [
-          "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb",
-          "#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb"
-        ]
+def display(name, locals = {})
+  render_template(name: name, locals: locals)
+end
 
-        template_path = paths_to_check.find { |path|
-          puts "looking in #{path}"
-          File.exist?(path)
-        }
+def to_s
+  render_template(locals: @locals)
+end
 
-        if template_path
-          template = Tilt::ERBTemplate.new(template_path)
-          template.render(self, locals: @locals, partial: method(:display))
-        else
-          raise "View for #{self.class} not found in either location"
-        end
-      end
 
       private
 
