@@ -50,7 +50,7 @@ module Hud
 
       def display(name, locals = {})
         paths_to_check = [
-          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::Display::Helpers }.name.split("::").first}/#{name}.html.erb",
+          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::ENV}.name.split("::").first}/#{name}.html.erb",
           "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
         ]
 
