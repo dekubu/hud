@@ -68,11 +68,11 @@ module Hud
         root_component_path = base_path.join("components", "#{name}.html.erb")
 
         begin
-          raise "Template #{name} not found in folder components" unless File.exist?(folder_component_path)
+          raise "Template #{name} not found in #{folder_name}" unless File.exist?(folder_component_path)
           template = Tilt::ERBTemplate.new(folder_component_path)
         rescue
           begin
-            raise "Template #{name} not found in root or app components directory" unless File.exist?(root_component_path)
+            raise "Template #{name} not found in #{root_component_path} directory" unless File.exist?(root_component_path)
             template = Tilt::ERBTemplate.new(root_component_path)
           rescue
             raise
