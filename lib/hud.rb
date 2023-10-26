@@ -15,14 +15,14 @@ module Hud
   end
 
   def self.configure
-    configuration.components_dirs = ["base"]
+    configuration.components_dirs = []
     yield(configuration)
   end
   class Display
     module Helpers
-      def display(name, locals: {})
+      def display(name,from: nil, locals: {})
         klz = Display.build(name)
-        klz.call(locals: locals).render_template(name: name, locals: @locals)
+        klz.call(locals: locals).render_template(name: name, locals: @locals, from: from)
       end
     end
 
@@ -59,7 +59,7 @@ module Hud
       end
 
 
-      def render_template(name: nil, locals: {})
+      def render_template(name: nil,from: nil, locals: {})
         name ||= self.class.to_s.downcase.gsub("::", "_")
 
         base_path = Pathname.new(Rack::App::Utils.pwd)
@@ -78,7 +78,15 @@ module Hud
         paths_to_check.each do |path|  
           if File.exist?(path)
             template = Tilt::ERBTemplate.new(path)
-            return template.render(self, locals)
+
+            if from.nil?
+              return template.render(self, locals)
+            else
+              from_path = base_path.join(from, "components")
+              return template.render(self, locals) if path.to_path.start_with? from_path.to_s
+            end
+
+            
           end
         end
 
