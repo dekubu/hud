@@ -68,14 +68,22 @@ module Hud
       end
 
       def to_s
-        template = if self.class.to_s.downcase.include? "::"
-          Tilt::ERBTemplate.new("#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase.gsub("::", "_")}.html.erb")
+        paths_to_check = [
+          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::Env }.name.split('::').first}/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb",
+          "#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb"
+        ]
+        
+        template_path = paths_to_check.find { |path|
+        puts "looking in #{path}"
+         File.exist?(path) 
+        }
+      
+        if template_path
+          template = Tilt::ERBTemplate.new(template_path)
+          template.render(self, locals: @locals, partial: method(:display))
         else
-          Tilt::ERBTemplate.new("#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase}.html.erb")
+          raise "View for #{self.class} not found in either location"
         end
-        template.render(self, locals: @locals, partial: method(:display))
-      rescue Errno::ENOENT => e
-        "Create a view for #{self.class}"
       end
 
       private
