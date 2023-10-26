@@ -15,7 +15,7 @@ module Hud
   end
 
   def self.configure
-    configuration.components_dir = "base"
+    configuration.components_dirs = ["base"]
     yield(configuration)
   end
   class Display
@@ -38,8 +38,8 @@ module Hud
       attr_reader :content
       alias_method :args, :locals
 
-      def folder_name
-        Hud.configuration.components_dir.to_s
+      def folders
+        Hud.configuration.components_dirs
       end
 
       def development?
@@ -64,22 +64,26 @@ module Hud
 
         base_path = Pathname.new(Rack::App::Utils.pwd)
 
-        folder_component_path = base_path.join(folder_name, "components", "#{name}.html.erb")
-        root_component_path = base_path.join("components", "#{name}.html.erb")
+        paths_to_check = []
 
-        begin
-          raise "Template #{name} not found in #{folder_name}" unless File.exist?(folder_component_path)
-          template = Tilt::ERBTemplate.new(folder_component_path)
-        rescue
-          begin
-            raise "Template #{name} not found in #{root_component_path} directory or #{folder_component_path}" unless File.exist?(root_component_path)
-            template = Tilt::ERBTemplate.new(root_component_path)
-          rescue
-            raise
+        folders.each do |folder_name|
+          paths_to_check << folder_component_path = base_path.join(folder_name, "components", "#{name}.html.erb")
+        end
+
+        root_component_path = base_path.join("components", "#{name}.html.erb")
+        paths_to_check << root_component_path
+        
+
+
+        paths_to_check.each do |path|  
+          if File.exist?(path)
+            template = Tilt::ERBTemplate.new(path)
+            return template.render(self, locals)
           end
         end
 
-        template.render(self, locals)
+        raise "cant find #{name} in #{paths_to_check.join(",")}"
+        
       end
 
 

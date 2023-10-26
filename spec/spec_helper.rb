@@ -2,7 +2,7 @@ require "bundler/setup"
 require "hud"
 
 Hud.configure do |config|
-
+  config.components_dirs = ["base"]
 end
 
 RSpec.configure do |config|
