@@ -19,13 +19,15 @@ class Hud::CLI::DefaultCommands::Mount < Hud::CLI::Command
     Dir.chdir("./#{name}") do
       rename_filename("base.rb", "#{name}.rb")
       replace_in_file("#{name}.rb", "Base", name.capitalize)
+
       replace_in_file("./index.html.erb", "Base", name.capitalize)
       replace_in_file("./index.html.erb", "base", name)
 
       replace_in_file("./layout.html.erb", "Base", name.capitalize)
       replace_in_file("./layout.html.erb", "base", name)
 
-      STDOUT.puts(`tree .`)
+      `mv #{name}.rb ../`
+      STDOUT.puts(`tree ../`)
       STDOUT.puts("Mounted #{name} - ok!")
     end
   end
