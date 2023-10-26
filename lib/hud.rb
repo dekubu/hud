@@ -43,6 +43,7 @@ module Hud
   
     class Component
       attr_reader :locals
+      attr_reader :content
       alias args locals
   
       def folder_name
@@ -83,7 +84,10 @@ module Hud
       end
   
       def display(name, locals = {})
-        render_template(name: name, locals: locals)
+        @content = render_template(name: name, locals: locals)
+      end
+      def to_s
+        @content
       end
   
       private
