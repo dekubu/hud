@@ -11,8 +11,14 @@ require "hud/cli"
 
 module Hud
   class Error < StandardError; end
-  module Env ;end
-  
+
+  module Env
+    def self.included(base)
+      folder_name = base.name.split("::").first.downcase
+      `mkdir -p components/#{folder_name}`
+    end
+  end
+
   class Display
     module Helpers
       def display(name, locals: {})
@@ -34,6 +40,8 @@ module Hud
     end
 
     class Component
+      include Env
+
       def development?
         ENV["RACK_ENV"] == "development"
       end
@@ -49,14 +57,17 @@ module Hud
       end
 
       def display(name, locals = {})
+        helper_module = self.class.included_modules.find { |mod| mod == Hud::Env }
+        folder_name = helper_module ? helper_module.name.split("::").first.downcase : ''
+        
         paths_to_check = [
-          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::Env}.name.split("::").first}/#{name}.html.erb",
+          "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{name}.html.erb",
           "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
         ]
 
         partial_path = paths_to_check.find { |path| 
           puts "looking in #{path} for #{name}"
-          File.exist?(path) 
+          File.exist?(path)
         }
 
         if partial_path
@@ -68,16 +79,19 @@ module Hud
       end
 
       def to_s
+        helper_module = self.class.included_modules.find { |mod| mod == Hud::Env }
+        folder_name = helper_module ? helper_module.name.split("::").first.downcase : ''
+        
         paths_to_check = [
-          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::Env }.name.split('::').first}/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb",
+          "#{Rack::App::Utils.pwd}/components/#{folder_name}/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb",
           "#{Rack::App::Utils.pwd}/components/#{self.class.to_s.downcase.gsub('::', '_')}.html.erb"
         ]
         
-        template_path = paths_to_check.find { |path|
-        puts "looking in #{path}"
-         File.exist?(path) 
+        template_path = paths_to_check.find { |path| 
+          puts "looking in #{path}"
+          File.exist?(path) 
         }
-      
+
         if template_path
           template = Tilt::ERBTemplate.new(template_path)
           template.render(self, locals: @locals, partial: method(:display))
@@ -89,12 +103,6 @@ module Hud
       private
 
       def initialize(locals: {})
-        helper_module = self.class.included_modules.find { |mod| mod == Hud::Env }
-        if helper_module
-          folder_name = helper_module.name.split("::").first.downcase
-          `mkdir -p components/#{folder_name}`
-        end
-        `mkdir -p components/`
         @locals = OpenStruct.new(locals)
       end
     end
