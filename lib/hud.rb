@@ -50,7 +50,7 @@ module Hud
 
       def display(name, locals = {})
         paths_to_check = [
-          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::ENV}.name.split("::").first}/#{name}.html.erb",
+          "#{Rack::App::Utils.pwd}/components/#{self.class.included_modules.find { |mod| mod == Hud::Env}.name.split("::").first}/#{name}.html.erb",
           "#{Rack::App::Utils.pwd}/components/#{name}.html.erb"
         ]
 
@@ -78,9 +78,9 @@ module Hud
       private
 
       def initialize(locals: {})
-        helper_module = self.class.included_modules.find { |mod| mod == Hud::Display::Helpers }
+        helper_module = self.class.included_modules.find { |mod| mod == Hud::Env }
         if helper_module
-          folder_name = helper_module.name.split("::").first
+          folder_name = helper_module.name.split("::").first.downcase
           `mkdir -p components/#{folder_name}`
         end
         `mkdir -p components/`
