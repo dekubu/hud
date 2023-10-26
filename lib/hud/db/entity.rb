@@ -91,9 +91,9 @@ module Hud
                 result
               end
 
-              alias :insert :add
-              alias :"<<" :add
-              alias :save :update
+              alias_method :insert, :add
+              alias_method :<<, :add
+              alias_method :save, :update
             end
 
             if defined?(@@queries)
@@ -119,7 +119,7 @@ module Hud
       end
 
       def new?
-        return true if self.created_at.nil?
+        return true if created_at.nil?
         false
       end
 

@@ -4,9 +4,9 @@ module Hud::CLI::DefaultCommands::ListCommands
   PRESERVED_KEYWORDS = %w[help routes irb init].freeze
 
   DEFAULT_COMMANDS = {
-    'init' => Hud::CLI::DefaultCommands::Init.description,
-    'help' => 'list all available command or describe a specific command',
-    'irb' => Hud::CLI::DefaultCommands::IRB.description
+    "init" => Hud::CLI::DefaultCommands::Init.description,
+    "help" => "list all available command or describe a specific command",
+    "irb" => Hud::CLI::DefaultCommands::IRB.description
   }.freeze
 
   class Formatter
@@ -15,11 +15,11 @@ module Hud::CLI::DefaultCommands::ListCommands
     end
 
     def command_suggestion_line_by(name, desc)
-      [name.to_s.rjust(@rjust), desc].join('  ')
+      [name.to_s.rjust(@rjust), desc].join("  ")
     end
 
     def format(collection_hash)
-      collection_hash.to_a.sort_by{ |k, v| k.to_s }.map do |name, desc|
+      collection_hash.to_a.sort_by { |k, v| k.to_s }.map do |name, desc|
         command_suggestion_line_by(name, desc)
       end.join("\n")
     end

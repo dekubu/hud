@@ -1,12 +1,10 @@
-require 'optparse'
+require "optparse"
 class Hud::CLI
-  
-  require 'hud/cli/command'
-  require 'hud/cli/default_commands'
-  require 'hud/cli/runner'
+  require "hud/cli/command"
+  require "hud/cli/default_commands"
+  require "hud/cli/runner"
 
   class << self
-
     def start(argv)
       runner.start(argv)
     end
@@ -14,7 +12,6 @@ class Hud::CLI
     def runner
       Hud::CLI::Runner.new
     end
-    
   end
 
   def merge!(cli)
@@ -31,7 +28,6 @@ class Hud::CLI
   def command(name, &block)
     command_prototype = Class.new(Hud::CLI::Command)
     command_prototype.class_exec(&block)
-    commands[name.to_s.to_sym]= command_prototype.new
+    commands[name.to_s.to_sym] = command_prototype.new
   end
-
 end

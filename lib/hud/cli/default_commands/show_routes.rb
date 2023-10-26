@@ -1,19 +1,19 @@
 class Hud::CLI::DefaultCommands::ShowRoutes < Hud::CLI::Command
-  description 'list the routes for the application'
+  description "list the routes for the application"
 
-  on '-v', '--verbose', 'print out everything' do
+  on "-v", "--verbose", "print out everything" do
     @verbose = true
   end
 
-  on '-d', '--desc', '--description', 'include endpoint descriptions too' do
+  on "-d", "--desc", "--description", "include endpoint descriptions too" do
     @description = true
   end
 
-  on '-l', '--location', '--source-location', 'show endpoint definition locations' do
+  on "-l", "--location", "--source-location", "show endpoint definition locations" do
     @source_location = true
   end
 
-  on '-m', '--middlewares', 'show endpoint definition middleware stack' do
+  on "-m", "--middlewares", "show endpoint definition middleware stack" do
     @middlewares = true
   end
 
@@ -35,9 +35,8 @@ class Hud::CLI::DefaultCommands::ShowRoutes < Hud::CLI::Command
   end
 
   def width_by(endpoints, fields)
-    fields.reduce({}) do |widths, property|
+    fields.each_with_object({}) do |property, widths|
       widths[property] = endpoints.map { |endpoint| fetch_field(endpoint, property).to_s.length }.max
-      widths
     end
   end
 
@@ -48,15 +47,15 @@ class Hud::CLI::DefaultCommands::ShowRoutes < Hud::CLI::Command
   end
 
   FIELD_FETCHERS = {
-    :request_method =>  proc { |endpoint| endpoint.request_method },
-    :request_path =>  proc { |endpoint| endpoint.request_path },
-    :description => proc { |endpoint| endpoint.description },
-    :source_location => proc do |endpoint|
+    request_method: proc { |endpoint| endpoint.request_method },
+    request_path: proc { |endpoint| endpoint.request_path },
+    description: proc { |endpoint| endpoint.description },
+    source_location: proc do |endpoint|
       callable = endpoint.properties[:callable]
       callable = callable.method(:call) unless callable.is_a?(::Proc)
-      path = callable.source_location.join(':')
-      relative_path_rgx = Regexp.new(sprintf('^%s', Regexp.escape(Hud::Utils.pwd('/'))))
-      path.sub(relative_path_rgx, '')
+      path = callable.source_location.join(":")
+      relative_path_rgx = Regexp.new(sprintf("^%s", Regexp.escape(Hud::Utils.pwd("/"))))
+      path.sub(relative_path_rgx, "")
     end
   }.freeze
 
@@ -73,7 +72,7 @@ class Hud::CLI::DefaultCommands::ShowRoutes < Hud::CLI::Command
 
       outputs << fields.map do |field|
         fetch_field(endpoint, field).to_s.ljust(widths[field])
-      end.join('   ')
+      end.join("   ")
 
       if @middlewares
         outputs << pretty_print_middlewares(endpoint)
@@ -103,8 +102,7 @@ class Hud::CLI::DefaultCommands::ShowRoutes < Hud::CLI::Command
     end
 
     builder.middlewares.map do |middleware|
-      ["\t", '* ', middleware].join
+      ["\t", "* ", middleware].join
     end.join("\n")
   end
-
 end

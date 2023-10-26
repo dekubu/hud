@@ -1,5 +1,4 @@
 module Hud::CLI::Command::Configurator
-
   extend self
 
   def configure(command, name, options_parser)
@@ -18,20 +17,23 @@ module Hud::CLI::Command::Configurator
   end
 
   def update_banner(command, name, banner)
-
-    banner.sub!('[options]', "#{name} [options]")
+    banner.sub!("[options]", "#{name} [options]")
 
     # [[:req, :a], [:opt, :b], [:rest, :c], [:keyreq, :d], [:keyrest, :e]]
-    (command.method(:action).parameters rescue []).each do |type, keyword|
+    begin
+      command.method(:action).parameters
+    rescue
+      []
+    end.each do |type, keyword|
       case type
-        when :req
-          banner.concat(" <#{keyword}>")
+      when :req
+        banner.concat(" <#{keyword}>")
 
-        when :opt
-          banner.concat(" [<#{keyword}>]")
+      when :opt
+        banner.concat(" [<#{keyword}>]")
 
-        when :rest, :keyrest
-          banner.concat(" [<#{keyword}> <#{keyword}> ...]")
+      when :rest, :keyrest
+        banner.concat(" [<#{keyword}> <#{keyword}> ...]")
 
       end
     end
@@ -39,7 +41,5 @@ module Hud::CLI::Command::Configurator
     banner.concat("\n\n")
     banner.concat(command.class.description)
     banner.concat("\n\n")
-
   end
-
 end
