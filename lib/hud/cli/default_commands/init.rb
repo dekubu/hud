@@ -22,7 +22,7 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
       rename_filename("base.rb", "#{name}.rb")
 
       replace_in_file("#{name}.rb", "Base", name.capitalize)
-      
+
       replace_in_file("config.ru", "Base", name.capitalize)
       replace_in_file("config.ru", "base", name.downcase)
 
@@ -32,8 +32,8 @@ class Hud::CLI::DefaultCommands::Init < Hud::CLI::Command
       replace_in_file("./#{name}/layout.html.erb", "Base", name.capitalize)
       replace_in_file("./#{name}/layout.html.erb", "base", name)
 
-      STDOUT.puts(`tree .`)
-      STDOUT.puts("Initialized #{name} - ok!")
+      $stdout.puts(`tree .`)
+      $stdout.puts("Initialized #{name} - ok!")
     end
   end
 

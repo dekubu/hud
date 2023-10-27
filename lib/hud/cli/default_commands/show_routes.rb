@@ -18,7 +18,7 @@ class Hud::CLI::DefaultCommands::ShowRoutes < Hud::CLI::Command
   end
 
   action do
-    STDOUT.puts(format(sort(Hud::CLI.rack_app.router.endpoints)))
+    $stdout.puts(format(sort(Hud::CLI.rack_app.router.endpoints)))
   end
 
   private

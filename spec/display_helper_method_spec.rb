@@ -23,9 +23,9 @@ RSpec.describe Hud::Display::Helpers do
       expect(result).to be_a(String)
       expect(result.include?("Header")).to be_truthy
     end
-    
+
     it "from alt components '/alt/components'" do
-      result = display(:header, from: "alt", locals: { key: "value" })
+      result = display(:header, from: "alt", locals: {key: "value"})
       expect(result).to be_a(String)
       expect(result.include?("Alt")).to be_truthy
     end

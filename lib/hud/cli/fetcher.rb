@@ -21,8 +21,8 @@ module Hud::CLI::Fetcher
   def rack_app_with_most_endpoints
     ObjectSpace.each_object(Class).select { |klass|
       klass < Hud
-    }.uniq.sort_by { |rack_app|
+    }.uniq.max_by { |rack_app|
       rack_app.router.endpoints.length
-    }.last
+    }
   end
 end

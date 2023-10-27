@@ -36,31 +36,31 @@ module Hud
                 uid = SecureRandom.uuid
                 entity.created_at = DateTime.now.to_s
                 entity.last_updated_at = entity.created_at
-
                 SDBM.open(@name) do |db|
                   db[uid] = Marshal.dump(entity.to_hash)
                 end
-
                 uid
               end
 
+              alias_method :create, :add
+              alias_method :insert, :add
+              alias_method :put, :add
+              alias_method :append, :add
+              alias_method :store, :add
+
               def update(entity)
                 entity.last_updated_at = DateTime.now.to_s
-
                 SDBM.open(@name) do |db|
                   db[entity.uid] = Marshal.dump(entity.to_hash)
                 end
-
                 entity
               end
 
-              def persist(entity)
-                if entity.new?
-                  add(entity)
-                else
-                  update(entity)
-                end
-              end
+              alias_method :modify, :update
+              alias_method :change, :update
+              alias_method :edit, :update
+              alias_method :revise, :update
+              alias_method :alter, :update
 
               def delete(entity)
                 SDBM.open(@name) do |db|
@@ -68,12 +68,39 @@ module Hud
                 end
               end
 
-              def reset!
-                all.map { |e| delete(e) }
-              end
+              alias_method :remove, :delete
+              alias_method :erase, :delete
+              alias_method :discard, :delete
+              alias_method :destroy, :delete
+              alias_method :wipe, :delete
 
               def get(uid)
                 all.find { |e| e.uid == uid }
+              end
+
+              alias_method :fetch, :get
+              alias_method :retrieve, :get
+              alias_method :find, :get
+              alias_method :acquire, :get
+              alias_method :obtain, :get
+
+              def reset!
+                puts "Warning: This will delete all records. Are you sure? (y/n)"
+                confirmation = gets.chomp
+
+                if confirmation.downcase == 'y'
+                  puts "Type 'reset' to confirm."
+                  final_confirmation = gets.chomp
+
+                  if final_confirmation.downcase == 'reset'
+                    all.map { |e| delete(e) }
+                    puts "All records have been deleted."
+                  else
+                    puts "Reset cancelled."
+                  end
+                else
+                  puts "Reset cancelled."
+                end
               end
 
               def count
@@ -90,10 +117,6 @@ module Hud
                 end
                 result
               end
-
-              alias_method :insert, :add
-              alias_method :<<, :add
-              alias_method :save, :update
             end
 
             if defined?(@@queries)
@@ -112,7 +135,7 @@ module Hud
       def to_hash
         result = {}
         instance_variables.each do |var_name|
-          attribute_name = var_name.to_s[1..-1].to_sym
+          attribute_name = var_name.to_s[1..].to_sym
           result[attribute_name] = instance_variable_get(var_name)
         end
         result
@@ -126,14 +149,12 @@ module Hud
       def self.from_hash(uid, data_hash)
         entity = new
         entity.uid = uid
-
         data_hash.each do |attribute, value|
           attribute = attribute.to_sym
           if entity.respond_to?("#{attribute}=")
             entity.send("#{attribute}=", value)
           end
         end
-
         entity
       end
     end

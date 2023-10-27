@@ -18,9 +18,10 @@ module Hud
     configuration.components_dirs = []
     yield(configuration)
   end
+
   class Display
     module Helpers
-      def display(name,from: nil, locals: {})
+      def display(name, from: nil, locals: {})
         klz = Display.build(name)
         klz.call(locals: locals).render_template(name: name, locals: @locals, from: from)
       end
@@ -58,8 +59,7 @@ module Hud
         new(locals: locals)
       end
 
-
-      def render_template(name: nil,from: nil, locals: {})
+      def render_template(name: nil, from: nil, locals: {})
         name ||= self.class.to_s.downcase.gsub("::", "_")
 
         base_path = Pathname.new(Rack::App::Utils.pwd)
@@ -67,15 +67,13 @@ module Hud
         paths_to_check = []
 
         folders.each do |folder_name|
-          paths_to_check << folder_component_path = base_path.join(folder_name, "components", "#{name}.html.erb")
+          paths_to_check << base_path.join(folder_name, "components", "#{name}.html.erb")
         end
 
         root_component_path = base_path.join("components", "#{name}.html.erb")
         paths_to_check << root_component_path
-        
 
-
-        paths_to_check.each do |path|  
+        paths_to_check.each do |path|
           if File.exist?(path)
             template = Tilt::ERBTemplate.new(path)
 
@@ -86,14 +84,11 @@ module Hud
               return template.render(self, locals) if path.to_path.start_with? from_path.to_s
             end
 
-            
           end
         end
 
         raise "cant find #{name} in #{paths_to_check.join(",")}"
-        
       end
-
 
       private
 

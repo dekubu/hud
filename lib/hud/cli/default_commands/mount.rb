@@ -27,8 +27,8 @@ class Hud::CLI::DefaultCommands::Mount < Hud::CLI::Command
       replace_in_file("./layout.html.erb", "base", name)
 
       `mv #{name}.rb ../`
-      STDOUT.puts(`tree ../`)
-      STDOUT.puts("Mounted #{name} - ok!")
+      $stdout.puts(`tree ../`)
+      $stdout.puts("Mounted #{name} - ok!")
     end
   end
 
