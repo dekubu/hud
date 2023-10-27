@@ -1,3 +1,7 @@
+require 'sdbm'
+require 'securerandom'
+require 'date'
+
 module Hud
   module DB
     module Entity
@@ -5,7 +9,10 @@ module Hud
         base.extend(ClassMethods)
       end
 
+      attr_accessor :uid, :created_at, :last_updated_at
+
       module ClassMethods
+
         def queries(&block)
           const_set(:Queries, Module.new(&block))
           self::Repository.include(const_get(:Queries)) if const_defined?(:Repository)
@@ -112,7 +119,9 @@ module Hud
                 SDBM.open(@name) do |db|
                   db.each do |key, value|
                     data = Marshal.load(value)
-                    result << @entity_class.from_hash(key, data)
+                    entity = @entity_class.new
+                    entity.from_hash(key, data)
+                    result << entity
                   end
                 end
                 result
@@ -128,9 +137,8 @@ module Hud
             super
           end
         end
-      end
 
-      attr_accessor :uid, :created_at, :last_updated_at
+      end
 
       def to_hash
         result = {}
@@ -146,17 +154,16 @@ module Hud
         false
       end
 
-      def self.from_hash(uid, data_hash)
-        entity = new
-        entity.uid = uid
+      def from_hash(uid, data_hash)
+        self.uid = uid
         data_hash.each do |attribute, value|
           attribute = attribute.to_sym
-          if entity.respond_to?("#{attribute}=")
-            entity.send("#{attribute}=", value)
+          if self.respond_to?("#{attribute}=")
+            self.send("#{attribute}=", value)
           end
         end
-        entity
       end
+
     end
   end
 end
