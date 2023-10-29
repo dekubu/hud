@@ -1,6 +1,4 @@
 require "hud/version"
-require_relative "hud/db/entity"
-
 require "rack/app"
 require "yaml"
 require "tilt"
