@@ -1,6 +1,8 @@
 
 # frozen_string_literal: true
 
+ire_relative "lib/hud/version"
+
 Gem::Specification.new do |spec|
   spec.name = 'hud'
   spec.version = Hud::VERSION
