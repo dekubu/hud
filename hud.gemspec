@@ -1,4 +1,6 @@
 
+# frozen_string_literal: true
+
 Gem::Specification.new do |spec|
   spec.name = 'hud'
   spec.version = Hud::VERSION
@@ -8,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.summary = 'Minimalist web framework using HTMX and Rack-app'
   spec.homepage = 'https://github.com/dekubu/hud/'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 2.6'
+  spec.required_ruby_version = '>= 3.2'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -31,8 +33,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler'
-  spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 
   spec.add_dependency 'browser'
