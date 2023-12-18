@@ -1,11 +1,13 @@
-require "hud/version"
 require "rack/app"
 require "yaml"
 require "tilt"
 require "ostruct"
 require "tilt/erb"
 require "rack/app/front_end"
-require "hud/cli"
+
+require_relative "hud/cli"
+require_relative "hud/version"
+
 
 module Hud
   def self.configuration
