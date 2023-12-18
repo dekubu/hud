@@ -16,6 +16,61 @@ module Hud
     configuration.components_dirs = []
     yield(configuration)
   end
+   module Middleware
+
+    def self.included(base)
+      base.use Middleware::Version
+      base.use Middleware::Environment
+    end
+            
+    class Version
+      def initialize(app)
+        @app = app
+        manifest_path = File.join(File.dirname(__FILE__),'config', 'manifest.yml')
+        @version = YAML.load_file(manifest_path)['version']
+      end
+    
+      def call(env)
+        status, headers, response = @app.call(env)
+    
+        response_body = ''
+        response.each { |part| response_body << part }
+        version_div = "<div style='position:fixed; bottom:0; right:0; z-index:9999; background-color:rgba(255, 255, 255, 0.7); padding:5px;'>Version: #{@version}</div>"
+        response_body.sub!("</body>", "#{version_div}</body>")
+        headers["Content-Length"] = response_body.bytesize.to_s
+    
+        response = [response_body]
+    
+        [status, headers, response]
+      end
+    end
+    class Environment
+      def initialize(app)
+        @app = app
+      end
+    
+      def call(env)
+        status, headers, response = @app.call(env)
+    
+        color = 'green'
+        color = 'orange' if ENV['HARBR_ENV'] == "next"
+        color = 'red' if ENV['HARBR_ENV'] == "live" && env["HTTP_HOST"].include?("harbr.zero2one.ee")
+    
+        response_body = ''
+        response.each { |part| response_body << part }
+        indicator_div = "<div style='height:30px; width:100%; background-color:#{color}; position:absolute; top:0; z-index:9999;'>#{ENV['HARBR_ENV']&.upcase} ENVIRONMENT</div>"
+        response_body.sub!("<body>", "<body>#{indicator_div}")
+        headers["Content-Length"] = response_body.bytesize.to_s
+    
+        response = [response_body]
+    
+    
+        [status, headers, response]
+      end
+    end
+
+  end
+  
 
   class Display
     module Helpers
