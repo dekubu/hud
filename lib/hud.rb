@@ -59,7 +59,7 @@ module Hud
     
         response_body = ''
         response.each { |part| response_body << part }
-        indicator_div = "<div style='height:30px; width:100%; background-color:#{color}; position:absolute; top:0; z-index:9999;'>#{ENV['HARBR_ENV']&.upcase} ENVIRONMENT</div>"
+        indicator_div = "<div style='height:30px; width:100%; background-color:#{color}; z-index:9999;'>#{ENV['HARBR_ENV']&.upcase} ENVIRONMENT</div>"
         response_body.sub!("<body>", "<body>#{indicator_div}")
         headers["Content-Length"] = response_body.bytesize.to_s
     
