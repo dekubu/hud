@@ -27,7 +27,7 @@ module Hud
     class Version
       def initialize(app)
         @app = app
-        manifest_path = File.join(File.dirname(__FILE__),'config', 'manifest.yml')
+        manifest_path = File.join('config', 'manifest.yml')
         @version = YAML.load_file(manifest_path)['version']
       end
     
