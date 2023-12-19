@@ -5,7 +5,6 @@ require "ostruct"
 require "tilt/erb"
 require "rack/app/front_end"
 
-require_relative "hud/cli"
 require_relative "hud/version"
 
 

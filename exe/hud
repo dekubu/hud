@@ -1,3 +1,0 @@
-#!/usr/bin/env ruby
-require "hud"
-Hud::CLI.start(ARGV)
