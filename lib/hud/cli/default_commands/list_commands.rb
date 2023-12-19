@@ -42,8 +42,7 @@ module Hud::CLI::DefaultCommands::ListCommands
   def header
     cmd_file_name = File.basename($PROGRAM_NAME)
     [
-      "Usage: #{cmd_file_name} <command> [options] <args>\n\n",
-      "Some useful #{cmd_file_name} commands are:"
+      "Usage: #{cmd_file_name} <command> [options] <args>\n\n"
     ].join("\n")
   end
 
