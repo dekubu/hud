@@ -150,5 +150,12 @@ module Hud
         @locals = OpenStruct.new(locals)
       end
     end
+
+    class Screen < Rack::App
+      include Hud::Middleware
+      apply_extensions :logger
+      apply_extensions :front_end
+    end
+
   end
 end
