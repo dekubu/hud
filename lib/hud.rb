@@ -153,8 +153,15 @@ module Hud
 
     class Screen < Rack::App
       include Hud::Middleware
+      include Hud::Display::Helpers
+      
       apply_extensions :logger
       apply_extensions :front_end
+
+      helpers do
+        include Hud::Display::Helpers
+      end
+    
     end
 
   end
