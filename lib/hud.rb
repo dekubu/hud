@@ -21,7 +21,7 @@ module Hud
 
     def self.included(base)
       base.use Middleware::Version
-      base.use Middleware::Environment
+      #base.use Middleware::Environment
     end
             
     class Version
@@ -54,12 +54,12 @@ module Hud
         status, headers, response = @app.call(env)
     
         color = 'green'
-        color = 'orange' if ENV['HARBR_ENV'] == "next"
+        color = 'orange' if ENV['HARBR_ENV'] == "next" or ENV['RACK_ENV'] == "staging"
         color = 'red' if ENV['HARBR_ENV'] == "live" && env["HTTP_HOST"].include?("harbr.zero2one.ee")
     
         response_body = ''
         response.each { |part| response_body << part }
-        indicator_div = "<div style='height:30px; width:100%; background-color:#{color}; z-index:9999;'>#{ENV['HARBR_ENV']&.upcase} ENVIRONMENT</div>"
+        indicator_div = "<div style='position:fixed; top:0; z-index:9999; height:30px; width:100%; background-color:#{color}; z-index:9999;'>#{ENV['HARBR_ENV']&.upcase} ENVIRONMENT</div>"
         response_body.sub!("<body>", "<body>#{indicator_div}")
         headers["Content-Length"] = response_body.bytesize.to_s
     
