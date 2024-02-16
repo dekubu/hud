@@ -114,9 +114,11 @@ module Hud
       end
 
       
-      def display(name, locals: {})
+      def display(name, locals: {},css:nil)
         template = Tilt::ERBTemplate.new("#{Hud.configuration.base_path}/components/#{name.to_s}.html.erb")
-        template.render(self, locals)
+        result = template.render(self, locals)
+        return Oga.parse_html(result).css(css) if css
+        result
       end
 
       alias_method :render, :display
@@ -135,7 +137,7 @@ module Hud
         new(locals: locals)
       end
 
-      def render_template(name: nil, from: nil, locals: {})
+      def render_template(name: nil, from: nil, locals: {},css: nil)
         name ||= self.class.to_s.downcase.gsub("::", "_")
 
         base_path = Pathname.new(Rack::App::Utils.pwd)
@@ -155,10 +157,14 @@ module Hud
 
             puts path
             if from.nil?
-              return template.render(self, locals)
+              result = template.render(self, locals)
+              return Oga.parse_html(result).css(css) if css
+              return result
             else
               from_path = base_path.join(from, "components")
-              return template.render(self, locals) if path.to_path.start_with? from_path.to_s
+              result = template.render(self, locals)
+              return Oga.parse_html(result).css(css) if css
+              return result if path.to_path.start_with? from_path.to_s
             end
 
           end
