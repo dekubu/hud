@@ -17,31 +17,34 @@ module Hud
     configuration.components_dirs = []
     yield(configuration)
   end
-   module Middleware
+  module Middleware
 
     def self.included(base)
       base.use Middleware::Version
       #base.use Middleware::Environment
     end
-            
+
     class Version
       def initialize(app)
         @app = app
         manifest_path = File.join('config', 'manifest.yml')
         @version = YAML.load_file(manifest_path)['version']
       end
-    
+
       def call(env)
         status, headers, response = @app.call(env)
-    
-        response_body = ''
-        response.each { |part| response_body << part }
-        version_div = "<div style='position:fixed; bottom:0; right:0; z-index:9999; background-color:rgba(255, 255, 255, 0.7); padding:5px;'>Version: #{@version}</div>"
-        response_body.sub!("</body>", "#{version_div}</body>")
-        headers["Content-Length"] = response_body.bytesize.to_s
-    
-        response = [response_body]
-    
+
+
+        if ENV['HUD_SHOW_VERSION']
+          response_body = ''
+          response.each { |part| response_body << part }
+          version_div = "<div style='position:fixed; bottom:0; right:0; z-index:9999; background-color:rgba(255, 255, 255, 0.7); padding:5px;'>Version: #{@version}</div>"
+          response_body.sub!("</body>", "#{version_div}</body>")
+          headers["Content-Length"] = response_body.bytesize.to_s
+
+          response = [response_body]
+        end
+
         [status, headers, response]
       end
     end
@@ -49,29 +52,32 @@ module Hud
       def initialize(app)
         @app = app
       end
-    
+
       def call(env)
         status, headers, response = @app.call(env)
-    
-        color = 'green'
-        color = 'orange' if ENV['HARBR_ENV'] == "next" or ENV['RACK_ENV'] == "staging"
-        color = 'red' if ENV['HARBR_ENV'] == "live" && env["HTTP_HOST"].include?("harbr.zero2one.ee")
-    
-        response_body = ''
-        response.each { |part| response_body << part }
-        indicator_div = "<div style='position:fixed; top:0; z-index:9999; height:30px; width:100%; background-color:#{color}; z-index:9999;'>#{ENV['HARBR_ENV']&.upcase} ENVIRONMENT</div>"
-        response_body.sub!("<body>", "<body>#{indicator_div}")
-        headers["Content-Length"] = response_body.bytesize.to_s
-    
+
+
+        if ENV['HUD_SHOW_ENVIROMENT']
+          color = 'green'
+          color = 'orange' if ENV['HUD_ENV'] == "next" 
+          color = 'red' if ENV['HUD_ENV'] == "live" 
+
+          response_body = ''
+          response.each { |part| response_body << part }
+          indicator_div = "<div style='position:fixed; top:0; z-index:9999; height:30px; width:100%; background-color:#{color}; z-index:9999;'>#{ENV['HARBR_ENV']&.upcase} ENVIRONMENT</div>"
+          response_body.sub!("<body>", "<body>#{indicator_div}")
+          headers["Content-Length"] = response_body.bytesize.to_s
+        end
+
         response = [response_body]
-    
-    
+
+
         [status, headers, response]
       end
     end
 
   end
-  
+
 
   class Display
     module Helpers
@@ -154,14 +160,14 @@ module Hud
     class Screen < Rack::App
       include Hud::Middleware
       include Hud::Display::Helpers
-      
+
       apply_extensions :logger
       apply_extensions :front_end
 
       helpers do
         include Hud::Display::Helpers
       end
-    
+
     end
 
   end
