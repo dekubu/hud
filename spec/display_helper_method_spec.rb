@@ -32,7 +32,7 @@ RSpec.describe Hud::Display::Helpers do
     
     it "from nested components result" do
       result = display(:result)
-      expect(result.include?("Ok")).to be_truthyclear
+      expect(result.include?("Ok")).to be_truthy
     end
   end
 end

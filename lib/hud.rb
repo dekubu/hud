@@ -1,6 +1,7 @@
 require "rack/app"
 require "yaml"
 require "tilt"
+require "pry"
 require "ostruct"
 require "tilt/erb"
 require "rack/app/front_end"
@@ -15,6 +16,7 @@ module Hud
 
   def self.configure
     configuration.components_dirs = []
+    configuration.base_path = Pathname.new(Rack::App::Utils.pwd) 
     yield(configuration)
   end
   module Middleware
@@ -98,6 +100,7 @@ module Hud
       attr_reader :locals
       attr_reader :content
       alias_method :args, :locals
+      
 
       def folders
         Hud.configuration.components_dirs
@@ -105,6 +108,11 @@ module Hud
 
       def development?
         ENV["RACK_ENV"] == "development"
+      end
+
+      def display(name, locals: {})
+        template = Tilt::ERBTemplate.new("#{Hud.configuration.base_path}/components/#{name.to_s}.html.erb")
+        template.render(self, locals)
       end
 
       def production?
@@ -137,6 +145,7 @@ module Hud
           if File.exist?(path)
             template = Tilt::ERBTemplate.new(path)
 
+            puts path
             if from.nil?
               return template.render(self, locals)
             else

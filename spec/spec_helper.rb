@@ -2,6 +2,7 @@ require "bundler/setup"
 require "hud"
 
 Hud.configure do |config|
+  config.base_path = "spec/apps/base"
   config.components_dirs = ["base", "alt"]
 end
 
