@@ -87,6 +87,9 @@ module Hud
         klz = Display.build(name)
         klz.call(locals: locals).render_template(name: name, locals: @locals, from: from)
       end
+      alias_method :render, :display
+      alias_method :d, :display   
+      alias_method :r, :display   
     end
 
     def self.build(name)
@@ -110,10 +113,15 @@ module Hud
         ENV["RACK_ENV"] == "development"
       end
 
+      
       def display(name, locals: {})
         template = Tilt::ERBTemplate.new("#{Hud.configuration.base_path}/components/#{name.to_s}.html.erb")
         template.render(self, locals)
       end
+
+      alias_method :render, :display
+      alias_method :d, :display   
+      alias_method :r, :display   
 
       def production?
         ENV["RACK_ENV"] == "production"

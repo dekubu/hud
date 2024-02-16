@@ -31,8 +31,19 @@ RSpec.describe Hud::Display::Helpers do
     end
     
     it "from nested components result" do
-      result = display(:result)
+      result = render(:result)
       expect(result.include?("Ok")).to be_truthy
     end
+
+    it "from nested components result using alias" do
+      result = d(:result)
+      expect(result.include?("Ok")).to be_truthy
+    end
+
+    it "from nested components result using alias" do
+      result = d(:result)
+      expect(result.include?("Ok")).to be_truthy
+    end
+    
   end
 end
