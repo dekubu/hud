@@ -29,5 +29,10 @@ RSpec.describe Hud::Display::Helpers do
       expect(result).to be_a(String)
       expect(result.include?("Alt")).to be_truthy
     end
+    
+    it "from nested components result" do
+      result = display(:result)
+      expect(result.include?("Ok")).to be_truthyclear
+    end
   end
 end
