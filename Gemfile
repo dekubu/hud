@@ -10,3 +10,5 @@ gem "standard", "~> 1.31"
 gem "rspec", "~> 3.12"
 
 gem "tilt", "~> 2.2"
+
+gem "oga", "~> 3.4"
