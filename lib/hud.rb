@@ -2,6 +2,7 @@ require "rack/app"
 require "yaml"
 require "tilt"
 require "pry"
+require "oga"
 require "ostruct"
 require "tilt/erb"
 require "rack/app/front_end"
@@ -83,9 +84,9 @@ module Hud
 
   class Display
     module Helpers
-      def display(name, from: nil, locals: {})
+      def display(name, from: nil, locals: {},css: nil)
         klz = Display.build(name)
-        klz.call(locals: locals).render_template(name: name, locals: @locals, from: from)
+        klz.call(locals: locals).render_template(name: name, locals: @locals, from: from,css: css)
       end
       alias_method :render, :display
       alias_method :d, :display   

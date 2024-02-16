@@ -44,6 +44,11 @@ RSpec.describe Hud::Display::Helpers do
       result = d(:result)
       expect(result.include?("Ok")).to be_truthy
     end
+
+    it "can call css" do
+      result = d(:result, css: "#ko").text
+      expect(result.include?("Ko")).to be_truthy
+    end
     
   end
 end
