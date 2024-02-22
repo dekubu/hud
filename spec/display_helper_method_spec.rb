@@ -45,6 +45,11 @@ RSpec.describe Hud::Display::Helpers do
       expect(result.include?("Ok")).to be_truthy
     end
 
+    it "pass locals through to nested component" do
+      result = d(:list,locals: {greeting:"hey delaney"})
+      expect(result.include?("hey delaney")).to be_truthy
+    end
+
     it "can call css" do
       result = d(:result, css: "#ko").text
       expect(result.include?("Ko")).to be_truthy

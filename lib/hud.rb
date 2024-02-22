@@ -114,6 +114,18 @@ module Hud
         ENV["RACK_ENV"] == "development"
       end
 
+      def method_missing(method_name, *args, &block)
+        if @locals.respond_to?(method_name)
+          @locals.send(method_name, *args, &block)
+        else
+          super
+        end
+        
+      end
+
+      def respond_to_missing?(method_name, include_private = false)
+        @locals.respond_to?(method_name) || super
+      end
       
       def display(name, locals: {},css:nil)
         template = Tilt::ERBTemplate.new("#{Hud.configuration.base_path}/components/#{name.to_s}.html.erb")
