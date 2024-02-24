@@ -5,6 +5,7 @@ RSpec.describe Hud::Display::Helpers do
   include described_class  # includes the module being described into the example group
 
   describe "#display" do
+
     before do
       ENV["RACK_ENV"] = "development"
       allow(Rack::App::Utils).to receive(:pwd).and_return("./spec/apps/base")
@@ -12,14 +13,12 @@ RSpec.describe Hud::Display::Helpers do
 
     it "from global conponents '/components" do
       result = display(:ok, locals: {key: "value"})
-      puts result
       expect(result.to_s).to be_a(String)
       expect(result.to_s.include?("Ok")).to be_truthy
     end
 
     it "from application conponents '/base/components" do
       result = display(:header, locals: {key: "value"})
-      puts result
       expect(result.to_s).to be_a(String)
       expect(result.to_s.include?("Header")).to be_truthy
     end
@@ -52,7 +51,6 @@ RSpec.describe Hud::Display::Helpers do
 
     it "can call css" do
       result = d(:result).css("#ko")
-      puts result
       expect(result.include?("Ko")).to be_truthy
     end
     
