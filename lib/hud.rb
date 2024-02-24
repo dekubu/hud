@@ -84,9 +84,9 @@ module Hud
 
   class Display
     module Helpers
-      def display(name, from: nil, locals: {},css: nil)
+      def display(name, from: nil, locals: {})
         klz = Display.build(name)
-        klz.call(locals: locals).render_template(name: name, locals: @locals, from: from,css: css)
+        klz.call(locals: locals).render_template(name: name, locals: @locals, from: from)
       end
       alias_method :render, :display
       alias_method :d, :display   
@@ -104,7 +104,18 @@ module Hud
       attr_reader :locals
       attr_reader :content
       alias_method :args, :locals
-      
+
+      class HtmlContent
+        def initialize(content)
+          @content = content
+        end
+        def to_s
+          @content
+        end
+        def css(selector)
+          Oga.parse_html(@content).css(selector).text
+        end
+      end      
 
       def folders
         Hud.configuration.components_dirs
@@ -130,8 +141,7 @@ module Hud
       def display(name, locals: {},css:nil)
         template = Tilt::ERBTemplate.new("#{Hud.configuration.base_path}/components/#{name.to_s}.html.erb")
         result = template.render(self, locals)
-        return Oga.parse_html(result).css(css) if css
-        result
+        return HtmlContent.new(result)
       end
 
       alias_method :render, :display
@@ -150,7 +160,7 @@ module Hud
         new(locals: locals)
       end
 
-      def render_template(name: nil, from: nil, locals: {},css: nil)
+      def render_template(name: nil, from: nil, locals: {})
         name ||= self.class.to_s.downcase.gsub("::", "_")
 
         base_path = Pathname.new(Rack::App::Utils.pwd)
@@ -171,13 +181,11 @@ module Hud
             puts path
             if from.nil?
               result = template.render(self, locals)
-              return Oga.parse_html(result).css(css) if css
-              return result
+              return HtmlContent.new(result)
             else
               from_path = base_path.join(from, "components")
               result = template.render(self, locals)
-              return Oga.parse_html(result).css(css) if css
-              return result if path.to_path.start_with? from_path.to_s
+              return HtmlContent.new(result) if path.to_path.start_with? from_path.to_s
             end
 
           end
